@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop Image Upload</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #drop-container {
+            text-align: center;
+        }
+
+        #drop-area {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+        }
+
+        #image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 20px;
+            display: none; /* initially hide the image */
+        }
+    </style>
+</head>
+<body>
+
+<div id="drop-container">
+    <div id="drop-area" ondragover="allowDrop(event)" ondrop="drop(event)">
+        <p>Drag and drop an image here, or click to select one</p>
+        <input type="file" id="fileInput" style="display:none;" onchange="handleFileSelect(event)">
+    </div>
+
+    <img id="image-preview" alt="Image Preview">
+</div>
+
+<script>
+    function allowDrop(event) {
+        event.preventDefault();
+        document.getElementById('drop-area').style.border = '2px dashed #000';
+    }
+
+    function drop(event) {
+        event.preventDefault();
+        document.getElementById('drop-area').style.border = '2px dashed #ccc';
+
+        const files = event.dataTransfer.files;
+        handleFiles(files);
+        showImagePreview();
+    }
+
+    function handleFileSelect(event) {
+        const files = event.target.files;
+        handleFiles(files);
+        showImagePreview();
+    }
+
+    function handleFiles(files) {
+        if (files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('image-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(files[0]);
+        }
+    }
+
+    function showImagePreview() {
+        document.getElementById('drop-area').style.display = 'none';
+        document.getElementById('image-preview').style.display = 'block';
+    }
+
+    // Open file input when clicking on the drop area
+    document.getElementById('drop-area').addEventListener('click', function () {
+        document.getElementById('fileInput').click();
+    });
+</script>
+
+</body>
+</html>
